@@ -8,7 +8,6 @@ import { sendTextMessage } from './services/evolution.service';
 // Inicializa a aplicação Elysia
 const app = new Elysia();
 
-
 // --- Rota 1: Health Check ---
 app.get('/', () => ({
   status: 'online',
@@ -33,6 +32,9 @@ const evolutionEventSchema = t.Object({
       }))
     })))
   })
+}, {
+  // --- CORREÇÃO 1: Permite chaves extras (como 'apikey', 'destination') ---
+  additionalProperties: true
 });
 
 // --- Rota 2: O Webhook Principal ---
@@ -90,6 +92,9 @@ app.post(
       t.Object({
         body: evolutionEventSchema // O payload real está aninhado aqui
         // Podemos ignorar as outras chaves como 'headers', 'params', etc.
+      }, {
+        // --- CORREÇÃO 2: Permite chaves extras (como 'headers', 'params') ---
+        additionalProperties: true
       })
     )
   }
