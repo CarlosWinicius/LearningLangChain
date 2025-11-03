@@ -1,0 +1,9 @@
+# Ignora o .git
+.git
+.gitignore
+
+# Ignora as dependências (vamos instalar dentro do container)
+node_modules
+
+# Ignora o arquivo de segredos
+.env

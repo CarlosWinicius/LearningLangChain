@@ -1,0 +1,26 @@
+version: 'latest'
+
+services:
+  # O nome do nosso serviço (pode ser qualquer um)
+  evo-agent:
+    # Diz ao compose para construir a imagem usando o Dockerfile
+    # no diretório atual (.)
+    build: .
+    
+    # Um nome fácil de lembrar para o nosso container
+    container_name: evo-langchain-agent
+    
+    # Reinicia o container automaticamente se ele falhar ou se o servidor reiniciar
+    restart: unless-stopped
+    
+    ports:
+      # Mapeia a porta do SEU COMPUTADOR (host) para a porta DO CONTAINER
+      # Formato: "HOST:CONTAINER"
+      # Mude "3001:3001" se sua porta no .env for outra (ex: "3000:3000")
+      - "3001:3001" 
+      
+    env_file:
+      # ESSA É A PARTE MÁGICA:
+      # Injeta todas as variáveis do seu arquivo .env local
+      # para dentro do container em tempo de execução.
+      - .env

@@ -1,23 +1,19 @@
-// src/agent/agent.ts
+// src/agent/agent.ts (Corrigido)
 
-import { ChatGroq } from '@langchain/groq'; // O conector para a API do Groq
-import { StringOutputParser } from '@langchain/core/output_parsers'; // Ferramenta para limpar a saída
-import { env } from '../config/env'; // Nossas variáveis de ambiente (com a GROQ_API_KEY)
-import { assistantPrompt } from './prompt'; // O prompt de personalidade que acabamos de criar
+import { ChatGroq } from '@langchain/groq';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+import { env } from '../config/env';
+import { assistantPrompt } from './prompt'; // Importa o prompt (que o TS acha que é uma Promise)
 
-// 1. Inicializa o Modelo de IA (Groq)
-// Aqui definimos qual modelo usar e passamos nossa chave de API.
+// 1. Inicializa o Modelo (pode ser global)
 const model = new ChatGroq({
   apiKey: env.GROQ_API_KEY,
-  model:"llama-3.1-8b-instant" , // Um modelo super-rápido do Groq
-  temperature: 0.7, // Um pouco de criatividade, mas não muito
+  model: "llama-3.1-8b-instant",
+  temperature: 0.7,
 });
 
-// 2. Cria a "Chain" (A Linha de Montagem)
-// Esta é a sequência de passos que o LangChain vai executar.
-const chain = assistantPrompt // Elo 1: Pega o prompt de personalidade
-  .pipe(model) // Elo 2: Envia o prompt formatado para o Groq
-  .pipe(new StringOutputParser()); // Elo 3: Limpa a saída para garantir que é uma string simples
+// 2. Inicializa o Parser (pode ser global)
+const parser = new StringOutputParser();
 
 /**
  * Invoca o agente de IA com uma entrada de texto.
@@ -28,6 +24,18 @@ export async function invokeAgent(input: string): Promise<string> {
   console.log(`[Agent] Recebido input: "${input}"`);
 
   try {
+    // --- INÍCIO DA CORREÇÃO ---
+    // O erro diz que 'assistantPrompt' é uma Promise.
+    // Então, usamos 'await' para "abrir" a Promise e pegar o template.
+    const prompt = await assistantPrompt;
+
+    // Agora que 'prompt' é um ChatPromptTemplate (e não uma Promise),
+    // nós criamos a 'chain' aqui dentro.
+    const chain = prompt
+      .pipe(model)
+      .pipe(parser);
+    // --- FIM DA CORREÇÃO ---
+
     // 3. Executa a "chain" com a entrada do usuário
     const response = await chain.invoke({
       input: input,
