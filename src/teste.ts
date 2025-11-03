@@ -5,7 +5,7 @@ import { sendTextMessage } from './services/evolution.service';
 // Coloque aqui um número de WhatsApp VÁLIDO (com seu DDD e código do país)
 // que você possa verificar se a mensagem chegou.
 // Exemplo: "5511999998888" (para um número de São Paulo, Brasil)
-const SEU_NUMERO_DE_TESTE = "5587992075741"; 
+const SEU_NUMERO_DE_TESTE = "5587911111111"; 
 // ----------------
 
 const MENSAGEM_DE_TESTE = "Olá! Este é um teste do evolution.service.ts. Se você recebeu isso, funcionou!";
